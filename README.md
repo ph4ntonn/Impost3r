@@ -5,7 +5,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/ph4ntonn/Impost3r)](https://github.com/ph4ntonn/Impost3r/issues)
 [![GitHub stars](https://img.shields.io/github/stars/ph4ntonn/Impost3r)](https://github.com/ph4ntonn/Impost3r/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/ph4ntonn/Impost3r)](https://github.com/ph4ntonn/Impost3r/network)
-[![GitHub license](https://img.shields.io/github/license/ph4ntonn/Impost3r)](https://github.com/ph4ntonn/Impost3r)
+[![GitHub license](https://img.shields.io/github/license/ph4ntonn/Impost3r)](https://github.com/ph4ntonn/Impost3r/blob/master/LICENSE)
 
 Impost3r是一个利用C语言编写,用来窃取linux下sudo密码的工具
 

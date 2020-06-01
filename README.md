@@ -1,4 +1,4 @@
-![imposter.png](https://github.com/ph4ntonn/Stowaway/blob/master/img/logo.png)
+![imposter.png](https://github.com/ph4ntonn/Impost3r/blob/master/img/Impost3r.png)
 
 # Impost3r
 

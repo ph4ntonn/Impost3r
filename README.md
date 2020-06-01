@@ -63,7 +63,7 @@ fi
 
 ## 窃取效果
 
-![image](https://github.com/ph4ntonn/Impost3r/blob/master/img/Impost3r.gif) 
+<img src="https://github.com/ph4ntonn/Impost3r/blob/master/img/Impost3r.gif" width="300" >
 
 ## 注意事项
 

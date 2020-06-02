@@ -7,6 +7,8 @@
 [![GitHub forks](https://img.shields.io/github/forks/ph4ntonn/Impost3r)](https://github.com/ph4ntonn/Impost3r/network)
 [![GitHub license](https://img.shields.io/github/license/ph4ntonn/Impost3r?label=license)](https://github.com/ph4ntonn/Impost3r/blob/master/LICENSE)
 
+[English](README_EN.md)
+
 Impost3r是一个利用C语言编写,用来窃取linux下sudo密码的工具
 
 用户可使用此程序在普通用户权限下，制造水坑，窃取合法用户的sudo密码

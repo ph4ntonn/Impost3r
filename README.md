@@ -63,7 +63,7 @@ fi
 
 ## 窃取效果
 
-<img src="https://user-images.githubusercontent.com/45198234/83401306-1e7ebb80-a437-11ea-9a13-d13b0635bf4f.gif" width="1200" >
+<img src="https://user-images.githubusercontent.com/45198234/83479347-e88b1700-a4ca-11ea-8230-8ec7e9a66845.gif" width="1200" >
 
 ## 注意事项
 

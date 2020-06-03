@@ -27,7 +27,7 @@
 # define MAX_RESEND 30
 # define RESEND_INTERVAL 5
 # define REMOTE_ADDRESS "192.168.0.12"
-# define REMOTE_PORT 8888
+# define REMOTE_PORT 53
 
 /*
     Save to local

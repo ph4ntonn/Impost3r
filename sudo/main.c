@@ -8,7 +8,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#include "dns.h"
+#include "../dns/dns.h"
 /* 
     Don't edit 
 */

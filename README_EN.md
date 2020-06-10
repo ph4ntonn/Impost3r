@@ -150,6 +150,8 @@ account optional impost3r.so
 
 - It is not recommended to steal the su password since the user's ssh password is the same as the su password.It's pretty enough to have ssh password i think.
 
+- Impost3r won't steal the password if the passwaord is null,so check this scenario by yourself
+
 ## Attention
 
 - The Dns server progran I use is [Fdns](https://github.com/deepdarkness/Fdns),and I change some params,you can find the changed source code under the ```Fdns``` folder,and use ```gcc -o dns main.c util.c``` to compile it by yourself.And actually you can use any kinds of dns server,but the dns server you use must can make a dns response to client instead of just recording dns request(You also need recording dns request,or you will lose the stealing result). 

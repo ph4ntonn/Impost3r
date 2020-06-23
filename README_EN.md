@@ -87,6 +87,8 @@ fi
 
 - When Impost3r steal the sudo password successfully,it will automatically clean the traces it make on the target server.
 
+- Impost3r can automatically determine whether the password entered by the user is the correct password, and will not clean itself and erase the trace until the user enters the correct password.
+
 ## Steal ssh/su password
 
 Stealing the ssh/su password is different from the sudo password stealing method above. You need root privilege.And this method can steal all user's password

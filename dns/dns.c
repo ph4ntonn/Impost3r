@@ -60,7 +60,7 @@ create_question(const char *hostname)
   question->qclass = htons(1);
 
   char *token;
-  const char delim[2] = ".";
+  const char delim[2] = "";
 
   char *hostname_dup = strdup(hostname);
   token = strtok(hostname_dup, delim);

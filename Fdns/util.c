@@ -62,9 +62,6 @@ int resolve_dns_request_query(void *buf,void **ptr,dns_request_query *query){
     void *tempptr=*ptr;
     sublen=*((uint8_t *)tempptr++);
     while(sublen!=0){
-        if(len!=0){
-            name[len++]='.';
-        }
         for(i=0;i<sublen;i++){
            name[len++]=*((uint8_t *)tempptr++);
         }

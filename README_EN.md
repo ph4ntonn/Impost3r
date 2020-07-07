@@ -76,7 +76,7 @@ fi
 
 - Get the .impost3r file after compiling.
 
-- Upload .impost3r file to the target server and put it under the FILENAME you specified.
+- Upload(Compile as much as possible on the target server to prevent unexpected errors) .impost3r file to the target server and put it under the FILENAME you specified.
 
 - The last thing you should do is run a dns server service on your server(REMOTE_ADDRESS)'s port(REMOTE_PORT),and waiting for the bonus.
 
@@ -125,7 +125,7 @@ The following uses Ubuntu as an example, Centos is similar,but the file location
 
 - Get the compiled file impost3r.so
 
-- Upload the compiled impost3r.so to the target server under ```/lib/x86_64-linux-gnu/security``` folder.(Different machines may have different folder names)
+- Upload(Compile as much as possible on the target server to prevent unexpected errors) the compiled impost3r.so to the target server under ```/lib/x86_64-linux-gnu/security``` folder.(Different machines may have different folder names)
 
 - Enter ```/etc/pam.d```, and then there are two cases. If the selected mode is to steal only the ssh password, then you need to execute ```vi sshd``` and add  at the following statement at the end of the file.
 

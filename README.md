@@ -160,7 +160,7 @@ account optional impost3r.so
 
 ## 注意事项
 
-- Dns服务端程序我使用的是[Fdns](https://github.com/deepdarkness/Fdns)，并修改了一部分参数，大家可在文件夹Fdns下找到修改后的源代码，请自行利用命令```gcc -o dns main.c util.c```编译(注意要先修改main.c中的监听端口),当然，也可以用别的dns服务端程序，这里并不受限，但是必须是会回复dns response的服务端程序，而不是仅解析dns request。
+- Dns服务端程序我使用的是[Fdns](https://github.com/deepdarkness/Fdns)，并修改了一部分参数，大家可在文件夹Fdns下找到修改后的源代码，请自行利用命令```gcc -o dns main.c util.c```编译(注意要先修改main.c中的监听端口)
 - 此程序仅是闲暇时开发学习，功能可能存在bug，请多多谅解，也欢迎反馈问题
 
 ## 致谢

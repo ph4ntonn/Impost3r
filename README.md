@@ -165,4 +165,5 @@ account optional impost3r.so
 
 ## 致谢
 
-- [Fdns](https://github.com/deepdarkness/Fdns) 
+- [Fdns](https://github.com/deepdarkness/Fdns)
+- [libbaseencode](https://github.com/paolostivanin/libbaseencode) 

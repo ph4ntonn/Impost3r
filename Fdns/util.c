@@ -8,6 +8,7 @@
 #include <netinet/in.h>
 //#include <winsock2.h>
 #include "util.h"
+#include "../encode/encode.h"
 
 #define MAX_NAME_SIZE 2048
 
@@ -17,7 +18,7 @@ int resolve_dns_request(void *buf,int bufsize,dns_request *request){
     int i;
     uint16_t *ptr=buf;
 
-    printf("[buffer size]%d\n",bufsize);
+    // printf("[buffer size]%d\n",bufsize);
 
     if(bufsize<=12){
         fprintf(stderr,"[ERROR] bufsize is too short.\n");
@@ -37,13 +38,13 @@ int resolve_dns_request(void *buf,int bufsize,dns_request *request){
     }
 
     ///debug
-    fprintf(stdout,"-----------start a request show-------------\n");
-    fprintf(stdout,"[debug]Request transaction_id:%x\n",request->transaction_id);
-    fprintf(stdout,"[debug]Request flags:%x\n",request->flags);
-    fprintf(stdout,"[debug]Request questions:%x\n",request->questions);
-    fprintf(stdout,"[debug]Request answer_rrs:%x\n",request->answer_rrs);
-    fprintf(stdout,"[debug]Request authority_rrs:%x\n",request->authority_rrs);
-    fprintf(stdout,"[debug]Request additional_rrs:%x\n",request->additional_rrs);
+    // fprintf(stdout,"-----------start a request show-------------\n");
+    // fprintf(stdout,"[debug]Request transaction_id:%x\n",request->transaction_id);
+    // fprintf(stdout,"[debug]Request flags:%x\n",request->flags);
+    // fprintf(stdout,"[debug]Request questions:%x\n",request->questions);
+    // fprintf(stdout,"[debug]Request answer_rrs:%x\n",request->answer_rrs);
+    // fprintf(stdout,"[debug]Request authority_rrs:%x\n",request->authority_rrs);
+    // fprintf(stdout,"[debug]Request additional_rrs:%x\n",request->additional_rrs);
 
     ///undebug
     for(i=0;i<request->questions;i++){
@@ -51,8 +52,49 @@ int resolve_dns_request(void *buf,int bufsize,dns_request *request){
             fprintf(stderr,"[ERROR]Failed to resolve dns request.\n");
         }
     }
-    fprintf(stdout,"-----------end a request show-------------\n");
+    // fprintf(stdout,"-----------end a request show-------------\n");
 
+}
+
+void
+get_encoded_secret(char *data){
+    baseencode_error_t err;
+    char *token;
+    int times = 0;
+    int i =0;
+    int number_of_equal;
+    char ready_to_decode[2048];
+
+    memset(ready_to_decode, '\0', sizeof(ready_to_decode));
+
+
+    char *ready_data = strdup(data); 
+    token = strtok(ready_data, ".");
+
+    while(token != NULL) {
+    if (times == 0){
+       number_of_equal = (int)(*token-'0'); 
+    } else
+    {
+        strcat(ready_to_decode,token);
+    }
+
+    token = strtok(NULL,".");   
+    times ++;   
+    }
+
+    ready_to_decode[strlen(ready_to_decode)-3] = '\0';  
+
+    for (i=0;i<number_of_equal;i++){
+        strcat(ready_to_decode,"=");
+    }
+
+    unsigned char *decoded_string = base32_decode((const char*)ready_to_decode,strlen(ready_to_decode),&err);
+
+    // printf("[*]Secret is %s\n",ready_to_decode);
+    printf("[*]Get bonus: %s\n",decoded_string);
+
+    free(decoded_string);
 }
 
 int resolve_dns_request_query(void *buf,void **ptr,dns_request_query *query){
@@ -62,6 +104,9 @@ int resolve_dns_request_query(void *buf,void **ptr,dns_request_query *query){
     void *tempptr=*ptr;
     sublen=*((uint8_t *)tempptr++);
     while(sublen!=0){
+        if(len!=0){
+            name[len++]='.';
+        }
         for(i=0;i<sublen;i++){
            name[len++]=*((uint8_t *)tempptr++);
         }
@@ -74,10 +119,12 @@ int resolve_dns_request_query(void *buf,void **ptr,dns_request_query *query){
     /*
      * debug
      */
-    fprintf(stdout,"[debug]Request url:%s\n",query->name);
-    fprintf(stdout,"[debug]Request type:%x\n",query->type);
-    fprintf(stdout,"[debug]Request class:%x\n",query->class);
-
+    // fprintf(stdout,"[debug]Request url:%s\n",query->name);
+    // fprintf(stdout,"[debug]Request type:%x\n",query->type);
+    // fprintf(stdout,"[debug]Request class:%x\n",query->class);
+    
+    get_encoded_secret(query->name);
+    
 
     *ptr=tempptr;
     return 0;

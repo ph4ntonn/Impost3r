@@ -52,7 +52,7 @@ int main(int argc,char *argv[]){
         result=recvfrom(sockfd,buf,MAX_BUFFER_SIZE,0, (struct sockaddr *) &client_addr,&addrlen);
         if(result<0)
             sys_error("recvfrom");
-        fprintf(stdout,"[debug]Get an request from [%s] success.\n",inet_ntoa(client_addr.sin_addr));
+        fprintf(stdout,"[*]Get an request from [%s] success.\n",inet_ntoa(client_addr.sin_addr));
         struct dns_request request;
 
         resolve_dns_request(buf,result,&request);

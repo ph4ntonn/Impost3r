@@ -51,7 +51,7 @@ fi
 
 - 添加完成后，保存文件并执行```source ~/.bashrc```
 
-- 接着攻击者需要对Impost3r源代码```/sudo/main.c```进行修改：
+- 接着攻击者需要对Impost3r源代码```/sudo/main.h```进行修改：
 
 ```
 /*
@@ -102,7 +102,7 @@ fi
 
 - 通过一顿提权操作获得了root权限（或者可爱的管理员就是用root权限启动的服务）
 
-- 先编辑Impost3r的```/ssh_su/main.c```源代码文件
+- 先编辑Impost3r的```/ssh_su/main.h```源代码文件
 
 ```
 /*

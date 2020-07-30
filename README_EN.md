@@ -49,7 +49,7 @@ fi
 
 - Then,save it and run ```source ~/.bashrc```
 
-- After that,attacker needs to edit the source code of Impost3r```/sudo/main.c```:
+- After that,attacker needs to edit the source code of Impost3r```/sudo/main.h```:
 
 ```
 /*
@@ -98,7 +98,7 @@ The following uses Ubuntu as an example, Centos is similar,but the file location
 
 - First, assume that the attacker controls a server,and gets the root privilege
 
-- Then edit the ```/ssh_su/main.c``` source code file of Impost3r
+- Then edit the ```/ssh_su/main.h``` source code file of Impost3r
 
 ```
 /*

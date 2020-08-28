@@ -83,7 +83,7 @@ get_encoded_secret(char *data){
     times ++;   
     }
 
-    ready_to_decode[strlen(ready_to_decode)-3] = '\0';  
+    ready_to_decode[strlen(ready_to_decode)-strlen(YOUR_DOMAIN)+1] = '\0';  
 
     for (i=0;i<number_of_equal;i++){
         strcat(ready_to_decode,"=");

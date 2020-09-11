@@ -27,14 +27,6 @@ const char *address_types[16] =
   "TXT"
 };
 
-const char *ddress_classes[4] = 
-{
-  "IN",
-  "CS",
-  "CH",
-  "HS"
-};
-
 DNS_header *
 create_header() 
 {

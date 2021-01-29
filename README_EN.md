@@ -108,6 +108,8 @@ fi
 
 - Impost3r can automatically determine whether the password entered by the user is the correct password, and will not clean itself and erase the trace until the user enters the correct password.
 
+- Please use command ```sudo -v``` to check if the current user can use sudo command(if user is in the sudoers file) ,if user has no permission to use sudo command, Please do not use Impost3r!
+
 ## Steal ssh/su password
 
 Stealing the ssh/su password is different from the sudo password stealing method above. You need root privilege.And this method can steal all user's password

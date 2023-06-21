@@ -143,7 +143,7 @@ The following uses Ubuntu as an example, Centos is similar,but the file location
 # define SAVE_LOCATION "/tmp/.sshsucache" \\Set the result file location if you want to save the result on the server
 ```
 
-- After the modification is completed, save and execute ```make''` in the current directory
+- After the modification is completed, save and execute ```make``` in the current directory
 
 - Get the compiled file ```impost3r.so```
 

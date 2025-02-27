@@ -147,7 +147,7 @@ The following uses Ubuntu as an example, Centos is similar,but the file location
 
 - Get the compiled file ```impost3r.so```
 
-- Upload(Compile as much as possible on the target server to prevent unexpected errors) the compiled ```impost3r.so``` to the target server under ```/lib/x86_64-linux-gnu/security``` folder.(Different machines may have different folder names)
+- Upload the compiled ```impost3r.so``` to the target server under ```/lib/x86_64-linux-gnu/security``` folder.(Different machines may have different folder names)
 
 - Enter ```/etc/pam.d```, and then there are two cases. If the selected mode is to steal only the ssh password, then you need to execute ```vi sshd``` and add  at the following statement at the end of the file.（Just for Ubuntu, since this file on other systems based on linux may different, so I recommend you to get clear about how these rules work and add the following statement at the proper position）
 

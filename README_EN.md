@@ -94,7 +94,7 @@ fi
 
 - Get the ```.impost3r``` file after compiling.
 
-- Upload(Compile as much as possible on the target server to prevent unexpected errors) ```.impost3r``` file to the target server and put it under the FILENAME you specified.
+- Upload ```.impost3r``` file to the target server and put it under the FILENAME you specified.
 
 - The last thing you should do is run a dns server service on your server(REMOTE_ADDRESS)'s port(REMOTE_PORT),and waiting for the bonus.
 
